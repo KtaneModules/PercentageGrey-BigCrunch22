@@ -17,11 +17,15 @@ public class PercentageGreyScript : MonoBehaviour
 	public Material[] GreyLevel;
 	public Material ModuleBacking;
 	public TextMesh PercentLevel;
+	public KMSelectable ForTesting;
+	public Material AllGreys;
 	
 	string Baseline = "";
 	string Answer = "";
 	bool Animating = false;
 	int Common = 0;
+	int Basis = 0;
+	bool Greyscale = false;
 	
 	//Logging
     static int moduleIdCounter = 1;
@@ -33,11 +37,12 @@ public class PercentageGreyScript : MonoBehaviour
 		moduleId = moduleIdCounter++;
 		Component.OnInteract += delegate () {PercentageCount(); return false; };
 		Component.OnInteractEnded += delegate () {Inspection();};
+		ForTesting.OnInteract += delegate () {Test(); return false; };
 	}
 
 	void Start()
 	{
-		int Basis = UnityEngine.Random.Range(0,11);
+		Basis = UnityEngine.Random.Range(0,11);
 		Backlight.material = GreyLevel[Basis];
 		Baseline = Basis != 0 ? Basis.ToString() + "0%" : "0%";
 		Debug.LogFormat("[% Grey #{0}] The module's current grey level: {1}", moduleId, Baseline);
@@ -83,7 +88,6 @@ public class PercentageGreyScript : MonoBehaviour
 			Answer = PercentLevel.text;
 			Debug.LogFormat("[% Grey #{0}] Module was release during: {1}", moduleId, Answer);
 			Animating = true;
-			yield return new WaitForSecondsRealtime(0.5f);
 			if (Answer == Baseline)
 			{
 				Debug.LogFormat("[% Grey #{0}] That is correct", moduleId);
@@ -100,6 +104,7 @@ public class PercentageGreyScript : MonoBehaviour
 				Module.HandlePass();
 				Backlight.material = ModuleBacking;
 				PercentLevel.text = "";
+				Greyscale = false;
 				ModuleSolved = true;
 				Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
 			}
@@ -112,6 +117,19 @@ public class PercentageGreyScript : MonoBehaviour
 				Start();
 				Animating = false;
 				Common = 0;
+			}
+		}
+	}
+	
+	void Test () {
+		Greyscale = !Greyscale;
+		if (Greyscale) {
+			Backlight.material = AllGreys;
+		} else {
+			if (ModuleSolved) {
+				Backlight.material = ModuleBacking;
+			} else {
+				Backlight.material = GreyLevel[Basis];
 			}
 		}
 	}
