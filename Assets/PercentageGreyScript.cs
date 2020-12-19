@@ -52,6 +52,7 @@ public class PercentageGreyScript : MonoBehaviour
 	{
 		if (!ModuleSolved && !Animating)
 		{
+			yield return new WaitForSecondsRealtime(0.4f);
 			while (Common != 10)
 			{
 				yield return new WaitForSecondsRealtime(0.4f);
@@ -88,6 +89,7 @@ public class PercentageGreyScript : MonoBehaviour
 			Answer = PercentLevel.text;
 			Debug.LogFormat("[% Grey #{0}] Module was release during: {1}", moduleId, Answer);
 			Animating = true;
+			yield return new WaitForSecondsRealtime(0.4f);
 			if (Answer == Baseline)
 			{
 				Debug.LogFormat("[% Grey #{0}] That is correct", moduleId);
