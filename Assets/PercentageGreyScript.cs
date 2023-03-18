@@ -165,6 +165,9 @@ public class PercentageGreyScript : MonoBehaviour
 			{
 				yield return null;
 			}
+			
+			yield return "strike";
+			yield return "solve";
 			Component.OnInteractEnded();
 		}
 	}
